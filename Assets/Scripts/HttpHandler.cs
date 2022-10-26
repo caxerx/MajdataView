@@ -56,6 +56,31 @@ public class HttpHandler : MonoBehaviour
         print("server stoped");
     }
 
+    public void LoadJsonFromWebsite(string request)
+    {
+        print("SCRIPT2");
+        var loader = GameObject.Find("DataLoader").GetComponent<JsonDataLoader>();
+        var timeProvider = GameObject.Find("AudioTimeProvider").GetComponent<AudioTimeProvider>();
+        var data =
+        new
+        {
+            startAt = System.DateTime.Now.Ticks,
+            startTime = 0,
+            audioSpeed = 1,
+            noteSpeed = 8.5f,
+            touchSpeed = 8.5f,
+            json = request
+        };
+
+
+        timeProvider.SetStartTime(data.startAt, data.startTime, data.audioSpeed);
+        loader.noteSpeed = (float)(107.25 / (71.4184491 * Mathf.Pow(data.noteSpeed + 0.9975f, -0.985558604f)));
+        loader.touchSpeed = data.touchSpeed;
+        loader.LoadJson(request, data.startTime);
+        GameObject.Find("Notes").GetComponent<PlayAllPerfect>().enabled = false;
+        GameObject.Find("MultTouchHandler").GetComponent<MultTouchHandler>().clearSlots();
+    }
+
     private void Update()
     {
         
