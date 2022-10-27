@@ -43,7 +43,7 @@ public class CustomSkin : MonoBehaviour
 
     async Task LoadTexture()
     {
-        var path = "http://localhost:8080/Skin";
+        var path = "./Skin";
         Outline = gameObject.GetComponent<SpriteRenderer>();
         print(path);
         
