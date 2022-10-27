@@ -56,34 +56,9 @@ public class HttpHandler : MonoBehaviour
         print("server stoped");
     }
 
-    public void LoadJsonFromWebsite(string request)
-    {
-        print("SCRIPT2");
-        var loader = GameObject.Find("DataLoader").GetComponent<JsonDataLoader>();
-        var timeProvider = GameObject.Find("AudioTimeProvider").GetComponent<AudioTimeProvider>();
-        var data =
-        new
-        {
-            startAt = System.DateTime.Now.Ticks,
-            startTime = 0,
-            audioSpeed = 1,
-            noteSpeed = 8.5f,
-            touchSpeed = 8.5f,
-            json = request
-        };
-
-
-        timeProvider.SetStartTime(data.startAt, data.startTime, data.audioSpeed);
-        loader.noteSpeed = (float)(107.25 / (71.4184491 * Mathf.Pow(data.noteSpeed + 0.9975f, -0.985558604f)));
-        loader.touchSpeed = data.touchSpeed;
-        loader.LoadJson(request, data.startTime);
-        GameObject.Find("Notes").GetComponent<PlayAllPerfect>().enabled = false;
-        GameObject.Find("MultTouchHandler").GetComponent<MultTouchHandler>().clearSlots();
-    }
-
     private void Update()
     {
-        
+
         if (request == "") return;
         var data = JsonConvert.DeserializeObject<EditRequestjson>(request);
         var loader = GameObject.Find("DataLoader").GetComponent<JsonDataLoader>();
@@ -98,11 +73,11 @@ public class HttpHandler : MonoBehaviour
             timeProvider.SetStartTime(data.startAt, data.startTime, data.audioSpeed);
             loader.noteSpeed = (float)(107.25 / (71.4184491 * Mathf.Pow(data.noteSpeed + 0.9975f, -0.985558604f)));
             loader.touchSpeed = data.touchSpeed;
-            loader.LoadJson(File.ReadAllText(data.jsonPath),data.startTime);
+            loader.LoadJson(File.ReadAllText(data.jsonPath), data.startTime);
             GameObject.Find("Notes").GetComponent<PlayAllPerfect>().enabled = false;
             GameObject.Find("MultTouchHandler").GetComponent<MultTouchHandler>().clearSlots();
 
-            bgManager.LoadBGFromPath(new FileInfo(data.jsonPath).DirectoryName,data.audioSpeed);
+            bgManager.LoadBGFromPath(new FileInfo(data.jsonPath).DirectoryName, data.audioSpeed);
             bgCover.color = new Color(0f, 0f, 0f, data.backgroundCover);
         }
         if (data.control == EditorControlMethod.OpStart)
@@ -118,7 +93,7 @@ public class HttpHandler : MonoBehaviour
             bgCover.color = new Color(0f, 0f, 0f, data.backgroundCover);
             bgManager.PlaySongDetail();
         }
-        if(data.control == EditorControlMethod.Pause)
+        if (data.control == EditorControlMethod.Pause)
         {
             timeProvider.isStart = false;
             bgManager.PauseVideo();
@@ -128,7 +103,7 @@ public class HttpHandler : MonoBehaviour
             timeProvider.ResetStartTime();
             SceneManager.LoadScene(1);
         }
-        if(data.control == EditorControlMethod.Continue)
+        if (data.control == EditorControlMethod.Continue)
         {
             timeProvider.SetStartTime(data.startAt, data.startTime, data.audioSpeed);
             bgManager.ContinueVideo(data.audioSpeed);
